@@ -10,7 +10,7 @@ from sklearn.model_selection import train_test_split #permite hacer una divisió
 #varios scrip
 #bloques de entrenamiento y prueba de un modelo
 if __name__ == '__main__':
-    dt_data=pd.read_csv('./data/dataO1.csv') #en el directorio el punto, ubicacion, envio de datos
+    dt_data=pd.read_csv('./data/dataOT.csv') #en el directorio el punto, ubicacion, envio de datos
 
     #print(dt_data.head(5)) #imprimimos los 5 primeros datos
 
