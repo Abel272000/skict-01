@@ -10,21 +10,21 @@ from sklearn.model_selection import train_test_split #permite hacer una divisió
 #varios scrip
 #bloques de entrenamiento y prueba de un modelo
 if __name__ == '__main__':
-    dt_data=pd.read_csv('./heart.csv') #en el directorio el punto, ubicacion, envio de datos
+    dt_data=pd.read_csv('./data/dataO1.csv') #en el directorio el punto, ubicacion, envio de datos
 
     #print(dt_data.head(5)) #imprimimos los 5 primeros datos
 
     ##10 datos 9 datos 1 etiquetado
 
-    dt_features=dt_data.drop(['target'],axis=1) #las featurus sin el target ##solo necesito 9 datos
-    dt_target = dt_data['target'] #obtenemos el target #separamos y obtenemos dos conjuntos 
+    dt_features=dt_data.drop(['INCIDENCIA'],axis=1) #las featurus sin el target ##solo necesito 9 datos
+    dt_incidecia = dt_data['INCIDENCIA'] #obtenemos el target #separamos y obtenemos dos conjuntos 
     
     dt_features = StandardScaler().fit_transform(dt_features) #Normalizamnos los datos ##por la cantidad de los datos son muy grande las cantidades de los datos ##normaliza los campos restantes
 
     ##entrenamiento y se envia los Feature y la clase predictiva mas el tamaño de los 10 conjuntos solo 30 voy a ocupar para entrenamiento y prueba el 0.30% del total de datos
     ##random_state=42 porque el numero 42 
     ##separacion
-    X_train,X_test,y_train,y_test =train_test_split(dt_features,dt_target,test_size=0.30,random_state=42)
+    X_train,X_test,y_train,y_test =train_test_split(dt_features,dt_incidecia,test_size=0.30,random_state=42)
     print(X_train.shape) #consultar la forma de la tabla con pandas
     print(y_train.shape) ##total de datos (717,) total de columnas (,13)
     
