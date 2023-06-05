@@ -1,7 +1,9 @@
 import pandas as pd #importamos pandas ##analisis de datos alias pd ##manipulacion de datos #se puede realizar lecturas de datos
 import sklearn #biblioteca de aprendizaje automático ##paquete varias librerias
 import matplotlib.pyplot as plt #Librería especializada en la creación de gráficos 
+
 from sklearn.decomposition import PCA #importamos algorimo PCA ##
+from sklearn.decomposition import KernelPCA #importamos algorimo PCA
 from sklearn.decomposition import IncrementalPCA #importamos algorimo PCA 
 from sklearn.linear_model import LogisticRegression #clasificación y análisis predictivo ## algoritmo para poder realizar dicha proyeccion ## calculo predictivo
 from sklearn.preprocessing import StandardScaler #Normalizar los datos ## libreria para normalizar
@@ -9,6 +11,7 @@ from sklearn.preprocessing import StandardScaler #Normalizar los datos ## librer
 from sklearn.model_selection import train_test_split #permite hacer una división de un conjunto de datos en dos ##partir datos 1 para entrenamiento 2 prueba
 #varios scrip
 #bloques de entrenamiento y prueba de un modelo
+
 if __name__ == '__main__':
     dt_data=pd.read_csv('./data/dataOT.csv') #en el directorio el punto, ubicacion, envio de datos
 
@@ -38,7 +41,7 @@ if __name__ == '__main__':
     #Como haremos una comparación con incremental PCA, haremos lo mismo para el IPCA.
     '''EL parámetro batch se usa para crear pequeños bloques, de esta forma podemos ir entrenandolos
     poco a poco y combinarlos en el resultado final'''
-    ipca=IncrementalPCA(n_components=5,batch_size=10) #tamaño de bloques, no manda a entrear todos los datos
+    ipca=IncrementalPCA(n_components=4,batch_size=10) #tamaño de bloques, no manda a entrear todos los datos
     ##batch envia pocos datos en este caso envia bloques de 10 en 10
     #Esto para que nuestro PCA se ajuste a los datos de entrenamiento que tenemos como tal
     ipca.fit(X_train)
@@ -92,4 +95,28 @@ if __name__ == '__main__':
     #Calculamos nuestra exactitud de nuestra predicción
     print("SCORE IPCA: ", logistic.score(dt_test, y_test))
 
+  
+    #Kerner igual a esta lista
+    kernel = ['linear','poly','rbf']
+
+    ##Aplicamos la función de kernel de tipo polinomial
+    for k in kernel:
+        ## importamos
+        kpca = KernelPCA(n_components=4, kernel = k)
+        #kpca = KernelPCA(n_components=4, kernel='poly' )
+        #Vamos a ajustar los datos
+        kpca.fit(X_train)
+
+
+        #Aplicamos el algoritmo a nuestros datos de prueba y de entrenamiento
+        dt_train = kpca.transform(X_train)
+        dt_test = kpca.transform(X_test)
+
+        #Aplicamos la regresión logística un vez que reducimos su dimensionalidad
+        logistic = LogisticRegression(solver='lbfgs')
+
+        #Entrenamos los datos
+        logistic.fit(dt_train, y_train)
+        #Imprimimos los resultados
+        print("SCORE KPCA " + k + " : ", logistic.score(dt_test, y_test))
     
