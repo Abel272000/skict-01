@@ -7,6 +7,7 @@ from sklearn.decomposition import KernelPCA #importamos algorimo PCA
 from sklearn.decomposition import IncrementalPCA #importamos algorimo PCA 
 from sklearn.linear_model import LogisticRegression #clasificación y análisis predictivo ## algoritmo para poder realizar dicha proyeccion ## calculo predictivo
 from sklearn.preprocessing import StandardScaler #Normalizar los datos ## libreria para normalizar
+from sklearn.preprocessing import KBinsDiscretizer ##Discretizar
 #supervisados datos etiquetados
 from sklearn.model_selection import train_test_split #permite hacer una división de un conjunto de datos en dos ##partir datos 1 para entrenamiento 2 prueba
 #varios scrip
@@ -22,7 +23,19 @@ if __name__ == '__main__':
     dt_features=dt_data.drop(['INCIDENCIA'],axis=1) #las featurus sin el target ##solo necesito 9 datos
     dt_incidecia = dt_data['INCIDENCIA'] #obtenemos el target #separamos y obtenemos dos conjuntos 
     
-    dt_features = StandardScaler().fit_transform(dt_features) #Normalizamnos los datos ##por la cantidad de los datos son muy grande las cantidades de los datos ##normaliza los campos restantes
+    ################### Normalizar los datos ################### 
+
+    #dt_features = StandardScaler().fit_transform(dt_features) #Normalizamnos los datos ##por la cantidad de los datos son muy grande las cantidades de los datos ##normaliza los campos restantes
+    #print(dt_features)
+
+    ###################Discretizar datos ###################
+
+    # Crear el objeto KBinsDiscretizer
+    #discretizer = KBinsDiscretizer(n_bins=5, encode='ordinal', strategy='uniform')
+
+    # Discretizar los datos
+    #dt_features = discretizer.fit_transform(dt_features)    
+    #print(dt_features)
 
     ##entrenamiento y se envia los Feature y la clase predictiva mas el tamaño de los 10 conjuntos solo 30 voy a ocupar para entrenamiento y prueba el 0.30% del total de datos
     ##random_state=42 porque el numero 42 
@@ -41,7 +54,7 @@ if __name__ == '__main__':
     #Como haremos una comparación con incremental PCA, haremos lo mismo para el IPCA.
     '''EL parámetro batch se usa para crear pequeños bloques, de esta forma podemos ir entrenandolos
     poco a poco y combinarlos en el resultado final'''
-    ipca=IncrementalPCA(n_components=4,batch_size=10) #tamaño de bloques, no manda a entrear todos los datos
+    ipca=IncrementalPCA(n_components=3,batch_size=10) #tamaño de bloques, no manda a entrear todos los datos
     ##batch envia pocos datos en este caso envia bloques de 10 en 10
     #Esto para que nuestro PCA se ajuste a los datos de entrenamiento que tenemos como tal
     ipca.fit(X_train)
@@ -102,7 +115,7 @@ if __name__ == '__main__':
     ##Aplicamos la función de kernel de tipo polinomial
     for k in kernel:
         ## importamos
-        kpca = KernelPCA(n_components=4, kernel = k)
+        kpca = KernelPCA(n_components=3, kernel = k)
         #kpca = KernelPCA(n_components=4, kernel='poly' )
         #Vamos a ajustar los datos
         kpca.fit(X_train)
