@@ -1,6 +1,11 @@
 import pandas as pd
 import warnings
 import matplotlib.pyplot as plt
+
+
+from sklearn.preprocessing import StandardScaler #Normalizar los datos ## libreria para normalizar
+from sklearn.preprocessing import KBinsDiscretizer ##Discretizar
+
 from sklearn.linear_model import (
 RANSACRegressor, HuberRegressor
 )
@@ -13,10 +18,24 @@ from sklearn.metrics import mean_squared_error
 
 ##########################################
 if __name__ == "__main__":
-    dataset = pd.read_csv('./data/123.csv')
+    dataset = pd.read_csv('./data/dataOT.csv')
     print(dataset.head(5))
     X = dataset.drop(['SEVERIDAD','INCIDENCIA'], axis=1)
     y = dataset[['INCIDENCIA']]
+
+    # Normalizar
+    #dataset = StandardScaler().fit_transform(dataset) #Normalizamnos los datos ##por la cantidad de los datos son muy grande las cantidades de los datos ##normaliza los campos restantes
+    #print(dt_features)
+
+    #Discretizar
+
+    # Crear el objeto KBinsDiscretizer
+    discretizer = KBinsDiscretizer(n_bins=5, encode='ordinal', strategy='uniform')
+
+    # Discretizar los datos
+    dataset = discretizer.fit_transform(dataset)    
+    #print(dt_features)
+
     X_train, X_test, y_train, y_test = train_test_split(X,y, 
     test_size=0.3, random_state=42)
     estimadores = {

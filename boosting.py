@@ -1,5 +1,6 @@
 import pandas as pd
 from sklearn.preprocessing import StandardScaler
+from sklearn.preprocessing import KBinsDiscretizer ##Discretizar
 from sklearn.ensemble import GradientBoostingClassifier
 #from sklearn.linear_model import LogisticRegression
 #from sklearn.svm import SVC
@@ -17,6 +18,20 @@ if __name__ == '__main__':
     #print(dt_heart['target'].describe())
     x = dt_heart.drop(['INCIDENCIA'], axis=1)
     y = dt_heart['INCIDENCIA']
+    ################### Normalizar los datos ################### 
+
+    #dt_heart = StandardScaler().fit_transform(dt_heart) #Normalizamnos los datos ##por la cantidad de los datos son muy grande las cantidades de los datos ##normaliza los campos restantes
+    #print(dt_features)
+
+    ###################Discretizar datos ###################
+
+    # Crear el objeto KBinsDiscretizer
+    #discretizer = KBinsDiscretizer(n_bins=5, encode='ordinal', strategy='uniform')
+
+    # Discretizar los datos
+    #dt_heart = discretizer.fit_transform(dt_heart)    
+    #print(dt_features)
+
     X_train, X_test, y_train, y_test = train_test_split(x, y, 
     test_size=0.35, random_state=1)
     '''boosting = 

@@ -7,6 +7,8 @@ from sklearn.linear_model import LinearRegression
 from sklearn.linear_model import Lasso
 from sklearn.linear_model import Ridge
 from sklearn.linear_model import ElasticNet
+from sklearn.preprocessing import StandardScaler #normalizacion
+from sklearn.preprocessing import KBinsDiscretizer #discretizacion
 # Importamos las metricas de entrenamiento y el error medio cuadrado
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_squared_error #error medio cuadrado
@@ -22,6 +24,17 @@ if __name__ == "__main__":
     # Definimos nuestro objetivo, que sera nuestro data set, pero solo en la columna score 
     y = dataset[['INCIDENCIA']]
     
+    #NORMALIZACION
+    #dataset = StandardScaler().fit_transform(dataset)
+
+    #DISCRETIZACION
+    # Crear el objeto KBinsDiscretizer
+    discretizer = KBinsDiscretizer(n_bins=5, encode='ordinal', strategy='uniform')
+
+    # Discretizar los datos
+    dataset = discretizer.fit_transform(dataset)    
+    #print(dt_features)
+
     ##datos totales 
     # Imprimimos los conjutos que creamos
     # En nuestros features tendremos definidos 155 registros, uno por cada pais, 7 colunas 1 por cada pais 
