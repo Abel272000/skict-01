@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt #Librería especializada en la creación de grá
 from sklearn.decomposition import PCA #importamos algorimo PCA ##
 from sklearn.decomposition import KernelPCA #importamos algorimo PCA
 from sklearn.decomposition import IncrementalPCA #importamos algorimo PCA 
+from sklearn.preprocessing import KBinsDiscretizer ##Discretizar
 from sklearn.linear_model import LogisticRegression #clasificación y análisis predictivo ## algoritmo para poder realizar dicha proyeccion ## calculo predictivo
 from sklearn.preprocessing import StandardScaler #Normalizar los datos ## libreria para normalizar
 #supervisados datos etiquetados
@@ -13,17 +14,29 @@ from sklearn.model_selection import train_test_split #permite hacer una divisió
 #bloques de entrenamiento y prueba de un modelo
 
 if __name__ == '__main__':
-    dt_data=pd.read_csv('./data/dataOT.csv') #en el directorio el punto, ubicacion, envio de datos
-
+    dt_data=pd.read_csv('./data/TDataSEnd1.csv') #en el directorio el punto, ubicacion, envio de datos
+    comp = 15
     ##print(dt_data.head(5)) #imprimimos los 5 primeros datos
 
     ##10 datos 9 datos 1 etiquetado
 
-    dt_features=dt_data.drop(['INCIDENCIA'],axis=1) #las featurus sin el target ##solo necesito 9 datos
-    dt_incidecia = dt_data['INCIDENCIA'] #obtenemos el target #separamos y obtenemos dos conjuntos 
+    dt_features=dt_data.drop(['Toxicos'],axis=1) #las featurus sin el target ##solo necesito 9 datos
+    dt_incidecia = dt_data['Toxicos'] #obtenemos el target #separamos y obtenemos dos conjuntos 
     
-    dt_features = StandardScaler().fit_transform(dt_features) #Normalizamnos los datos ##por la cantidad de los datos son muy grande las cantidades de los datos ##normaliza los campos restantes
+    ################### Normalizar los datos ################### 
 
+    #dt_features = StandardScaler().fit_transform(dt_features) #Normalizamnos los datos ##por la cantidad de los datos son muy grande las cantidades de los datos ##normaliza los campos restantes
+    #print(dt_features)
+
+    ###################Discretizar datos ###################
+
+    # Crear el objeto KBinsDiscretizer
+    discretizer = KBinsDiscretizer(n_bins=5, encode='ordinal', strategy='uniform')
+
+    # Discretizar los datos
+    dt_data = discretizer.fit_transform(dt_data)    
+    #print(dt_features)
+    
     ##entrenamiento y se envia los Feature y la clase predictiva mas el tamaño de los 10 conjuntos solo 30 voy a ocupar para entrenamiento y prueba el 0.30% del total de datos
     ##random_state=42 porque el numero 42 
     ##separacion
@@ -32,7 +45,7 @@ if __name__ == '__main__':
     print(y_train.shape) ##total de datos (717,) total de columnas (,13)
     
     ##algoritmo PCA
-    pca=PCA(n_components=3)##de las 13 columnas solo ocupamos 3 columnas artificiales..?? variables artificiales
+    pca=PCA(n_components=comp)##de las 13 columnas solo ocupamos 3 columnas artificiales..?? variables artificiales
     # Esto para que nuestro PCA se ajuste a los datos de entrenamiento que tenemos como tal
     ##enviamos todos los datos
     pca.fit(X_train)
@@ -60,7 +73,7 @@ if __name__ == '__main__':
 
     ##algoritmo de regrecion
     #Ahora vamos a configurar nuestra regresión logística
-    logistic=LogisticRegression(solver='lbfgs') ##predetermindado
+    logistic=LogisticRegression(solver='liblinear', max_iter=1000) ##predetermindado
     
     ##
     
@@ -80,7 +93,7 @@ if __name__ == '__main__':
     print("SCORE PCA: ", logistic.score(dt_test, y_test))##internamente imprimo la prediccion y se envia los datos de entremaiento
     
     ##
-    
+    logistic_ipca = LogisticRegression(solver='liblinear', max_iter=1000)
     #Configuramos los datos de entrenamiento
     dt_train = ipca.transform(X_train)
     dt_test = ipca.transform(X_test)
@@ -102,7 +115,7 @@ if __name__ == '__main__':
     ##Aplicamos la función de kernel de tipo polinomial
     for k in kernel:
         ## importamos
-        kpca = KernelPCA(n_components=4, kernel = k)
+        kpca = KernelPCA(n_components=comp, kernel = k)
         #kpca = KernelPCA(n_components=4, kernel='poly' )
         #Vamos a ajustar los datos
         kpca.fit(X_train)
@@ -113,7 +126,7 @@ if __name__ == '__main__':
         dt_test = kpca.transform(X_test)
 
         #Aplicamos la regresión logística un vez que reducimos su dimensionalidad
-        logistic = LogisticRegression(solver='lbfgs')
+        logistic=LogisticRegression(solver='liblinear', max_iter=1000)
 
         #Entrenamos los datos
         logistic.fit(dt_train, y_train)
