@@ -29,10 +29,10 @@ if __name__ == "__main__":
 
     #DISCRETIZACION
     # Crear el objeto KBinsDiscretizer
-    discretizer = KBinsDiscretizer(n_bins=5, encode='ordinal', strategy='uniform')
+    #discretizer = KBinsDiscretizer(n_bins=5, encode='ordinal', strategy='uniform')
 
     # Discretizar los datos
-    dataset = discretizer.fit_transform(dataset)    
+    #dataset = discretizer.fit_transform(dataset)    
     #print(dt_features)
 
     ##datos totales 
